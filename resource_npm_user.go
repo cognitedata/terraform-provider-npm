@@ -12,6 +12,10 @@ func resourceNPMUser() *schema.Resource {
 		Read:   resourceNPMUserRead,
 		Update: resourceNPMUserCreateOrUpdate,
 		Delete: resourceNPMUserDelete,
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 
 		Schema: map[string]*schema.Schema{
 			"user": &schema.Schema{
