@@ -1,7 +1,6 @@
-package main
+package npm
 
 import (
-	// "fmt"
 	"github.com/Rizbe/go-npm"
 	"github.com/hashicorp/terraform/helper/schema"
 )
