@@ -67,6 +67,15 @@ func resourceNPMUserRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceNPMUserDelete(d *schema.ResourceData, m interface{}) error {
+	user := d.Get("user").(string)
+	org := d.Get("org").(string)
+	client := m.(*npm.Client)
+	err := client.DeleteUser(org, user)
+	if err != nil {
+		// return resourceNPMUserRead(d, m)
+	}
+
+	d.SetId("")
 	return nil
 }
 
