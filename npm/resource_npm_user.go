@@ -74,7 +74,7 @@ func resourceNPMUserImporter(d *schema.ResourceData, meta interface{}) ([]*schem
 	sParts := strings.Split(d.Id(), ":")
 
 	if len(sParts) != 3 {
-		return nil, fmt.Errorf("Invalid ID specified. Supplied ID must be written as user:org:role")
+		return nil, fmt.Errorf("Invalid ID specified. Supplied ID must be written as user:role:org")
 	}
 
 	d.Set("user", sParts[0])
