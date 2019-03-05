@@ -3,6 +3,8 @@ package npm
 import (
 	"github.com/Rizbe/go-npm"
 	"github.com/hashicorp/terraform/helper/schema"
+	"strings"
+	"fmt"
 )
 
 func resourceNPMUser() *schema.Resource {
@@ -12,7 +14,7 @@ func resourceNPMUser() *schema.Resource {
 		Update: resourceNPMUserCreateOrUpdate,
 		Delete: resourceNPMUserDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			State: resourceNPMUserImporter,
 		},
 
 
@@ -66,4 +68,20 @@ func resourceNPMUserRead(d *schema.ResourceData, m interface{}) error {
 
 func resourceNPMUserDelete(d *schema.ResourceData, m interface{}) error {
 	return nil
+}
+
+func resourceNPMUserImporter(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
+	sParts := strings.Split(d.Id(), ":")
+
+	if len(sParts) != 3 {
+		return nil, fmt.Errorf("Invalid ID specified. Supplied ID must be written as user:role:org")
+	}
+
+	d.Set("user", sParts[0])
+	d.Set("role", sParts[1])
+	d.Set("org", sParts[2])
+
+	d.SetId(sParts[0])
+
+	return []*schema.ResourceData{d}, nil
 }
