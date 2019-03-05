@@ -1,10 +1,11 @@
 package npm
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/Rizbe/go-npm"
 	"github.com/hashicorp/terraform/helper/schema"
-	"strings"
-	"fmt"
 )
 
 func resourceNPMUser() *schema.Resource {
@@ -16,7 +17,6 @@ func resourceNPMUser() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			State: resourceNPMUserImporter,
 		},
-
 
 		Schema: map[string]*schema.Schema{
 			"user": &schema.Schema{
@@ -43,7 +43,7 @@ func resourceNPMUserCreateOrUpdate(d *schema.ResourceData, m interface{}) error 
 	client := m.(*npm.Client)
 	err := client.AddUser(org, user, role)
 	if err != nil {
-		// return resourceNPMUserRead(d, m)
+		return err
 	}
 
 	d.SetId(user)
@@ -55,14 +55,15 @@ func resourceNPMUserRead(d *schema.ResourceData, m interface{}) error {
 	user := d.Get("user").(string)
 	org := d.Get("org").(string)
 
-  client := m.(*npm.Client)
-	t, err := client.GetUsers(org, user)
+	client := m.(*npm.Client)
+	t, err := client.GetUsers(org)
 	if err != nil {
 		d.SetId("")
 		return nil
 	}
 	d.Set("user", user)
 	d.Set("role", t[user])
+	d.Set("org", org)
 	return nil
 }
 
@@ -72,7 +73,7 @@ func resourceNPMUserDelete(d *schema.ResourceData, m interface{}) error {
 	client := m.(*npm.Client)
 	err := client.DeleteUser(org, user)
 	if err != nil {
-		// return resourceNPMUserRead(d, m)
+		return err
 	}
 
 	d.SetId("")
